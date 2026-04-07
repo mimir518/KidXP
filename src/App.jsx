@@ -1,26 +1,23 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import PetBadge from './components/PetBadge'
 import TaskCard from './components/TaskCard'
 
 const initialTasks = [
-  { id: 't1', title: '整理书包', points: 5, done: false },
-  { id: 't2', title: '阅读 20 分钟', points: 8, done: false },
-  { id: 't3', title: '饭后整理桌面', points: 6, done: false },
+  { id: 't1', title: '整理书包', points: 5 },
+  { id: 't2', title: '阅读 20 分钟', points: 8 },
+  { id: 't3', title: '饭后整理桌面', points: 6 },
 ]
 
 export default function App() {
   const [tasks, setTasks] = useState(initialTasks)
   const [taskName, setTaskName] = useState('')
   const [taskPoints, setTaskPoints] = useState(5)
+  const [points, setPoints] = useState(0)
   const [animatePoints, setAnimatePoints] = useState(false)
 
-  const points = useMemo(
-    () => tasks.filter((task) => task.done).reduce((sum, task) => sum + task.points, 0),
-    [tasks],
-  )
-
-  const completeTask = (id) => {
-    setTasks((prev) => prev.map((task) => (task.id === id && !task.done ? { ...task, done: true } : task)))
+  const completeTask = (id, earnedPoints) => {
+    setTasks((prev) => prev.filter((task) => task.id !== id))
+    setPoints((prev) => prev + earnedPoints)
     setAnimatePoints(true)
     setTimeout(() => setAnimatePoints(false), 360)
   }
@@ -34,7 +31,6 @@ export default function App() {
         id: crypto.randomUUID(),
         title: taskName.trim(),
         points: Number(taskPoints),
-        done: false,
       },
       ...prev,
     ])
@@ -42,8 +38,6 @@ export default function App() {
     setTaskName('')
     setTaskPoints(5)
   }
-
-  const doneCount = tasks.filter((task) => task.done).length
 
   const deleteTask = (id) => {
     setTasks((prev) => prev.filter((task) => task.id !== id))
@@ -60,9 +54,7 @@ export default function App() {
           <p className="text-xs text-slate-500">当前积分</p>
           <p className={`text-4xl font-bold text-ink ${animatePoints ? 'animate-pop' : ''}`}>{points}</p>
           <div className="mt-2 flex items-center gap-2 text-xs text-slate-500">
-            <span>已完成 {doneCount} 项</span>
-            <span>•</span>
-            <span>待完成 {tasks.length - doneCount} 项</span>
+            <span>待完成 {tasks.length} 项</span>
           </div>
         </div>
       </header>

@@ -20,9 +20,15 @@ export default {
           '45%': { transform: 'scale(1.12)' },
           '100%': { transform: 'scale(1)' },
         },
+        stamp: {
+          '0%': { transform: 'scale(1.6) rotate(-12deg)', opacity: '0' },
+          '55%': { transform: 'scale(0.92) rotate(-8deg)', opacity: '1' },
+          '100%': { transform: 'scale(1) rotate(-8deg)', opacity: '1' },
+        },
       },
       animation: {
         pop: 'pop .35s ease-out',
+        stamp: 'stamp .4s ease-out forwards',
       },
     },
   },
