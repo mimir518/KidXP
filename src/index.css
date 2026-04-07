@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: 'Nunito', 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
+  color: #2f2a24;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #f8f4e9;
+}
