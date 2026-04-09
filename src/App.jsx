@@ -122,16 +122,18 @@ export default function App() {
 
   return (
     <main className="mx-auto min-h-screen w-full max-w-md bg-[#F6F1E3] px-6 pb-24 pt-6">
-      <section className="relative rounded-[28px] border border-[#E9E3DA] bg-[#FCFAF7] p-5 shadow-[0_6px_18px_rgba(70,57,34,0.08)]">
+      <section className="relative rounded-[28px] border border-[#E9E3DA] bg-[#FCFAF7] p-4 shadow-[0_6px_18px_rgba(70,57,34,0.08)]">
         <h1 className="text-[26px] font-semibold text-[#2F3540]">今天继续加油吧！</h1>
-        <div className="mt-4 rounded-[24px] border border-[#ECE6DD] bg-[#F9F6F0] px-5 py-3.5">
-          <p className="text-[48px] font-bold leading-[1] text-[#D97A34]">{totalPoints}</p>
-          <p className="mt-1.5 text-[16px] text-[#6B7280]">当前积分</p>
+        <div className="relative mt-3 rounded-[22px] border border-[#E9E1D3] bg-[#F4EFE6] px-5 py-3">
+          <div className="pointer-events-none absolute -right-3 -top-3 h-16 w-20 rounded-full bg-[#F9EEC9]/80" />
+          <div className="pointer-events-none absolute -left-4 bottom-0 h-12 w-16 rounded-full bg-[#E9F1DF]/80" />
+          <p className="relative z-10 text-[40px] font-bold leading-[1] text-[#D97A34]">{totalPoints}</p>
+          <p className="relative z-10 mt-1 text-[15px] text-[#6B7280]">当前积分</p>
         </div>
 
-        <div className="pointer-events-none absolute right-5 top-6 flex items-center gap-1 rounded-full bg-[#F5EEDC] px-2.5 py-1">
+        <div className="pointer-events-none absolute right-4 top-4 flex items-center gap-1 rounded-full bg-[#F7EFD9] px-2.5 py-1">
           <span className="text-sm text-[#E9C45E]">✦</span>
-          <span className="text-sm text-[#88A53E]">🐾</span>
+          <span className="text-base leading-none">🦊</span>
         </div>
       </section>
 
