@@ -124,14 +124,14 @@ export default function App() {
     <main className="mx-auto min-h-screen w-full max-w-md bg-[#F6F1E3] px-6 pb-24 pt-6">
       <section className="relative rounded-[28px] border border-[#E9E3DA] bg-[#FCFAF7] p-5 shadow-[0_6px_18px_rgba(70,57,34,0.08)]">
         <h1 className="text-[26px] font-semibold text-[#2F3540]">今天继续加油吧！</h1>
-        <div className="mt-4 rounded-[24px] border border-[#EEE8E0] bg-[#FEFCFA] px-5 py-4">
-          <p className="text-[58px] font-bold leading-[1] text-[#D97A34]">{totalPoints}</p>
-          <p className="mt-2 text-[17px] text-[#6B7280]">当前积分</p>
+        <div className="mt-4 rounded-[24px] border border-[#ECE6DD] bg-[#F9F6F0] px-5 py-3.5">
+          <p className="text-[48px] font-bold leading-[1] text-[#D97A34]">{totalPoints}</p>
+          <p className="mt-1.5 text-[16px] text-[#6B7280]">当前积分</p>
         </div>
 
-        <div className="pointer-events-none absolute right-5 top-6 flex items-center gap-2 rounded-full bg-[#FFF7E8] px-2 py-1 shadow-[0_4px_10px_rgba(70,57,34,0.06)]">
-          <span className="text-sm text-[#F3CC55]">✦</span>
-          <span className="text-[30px] leading-none">🦊</span>
+        <div className="pointer-events-none absolute right-5 top-6 flex items-center gap-1 rounded-full bg-[#F5EEDC] px-2.5 py-1">
+          <span className="text-sm text-[#E9C45E]">✦</span>
+          <span className="text-sm text-[#88A53E]">🐾</span>
         </div>
       </section>
 
