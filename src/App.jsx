@@ -2,7 +2,16 @@ import { useMemo, useState } from 'react'
 import TaskCard from './components/TaskCard'
 import TaskIcon, { iconOptions } from './components/TaskIcon'
 
-const taskColors = ['#FFFFFF', '#F5F9EB', '#EDF5FF', '#FFF4E5', '#F9EFFA', '#EFFFF8']
+const taskColors = [
+  '#FFECEC', // 红
+  '#FFF3E2', // 橙
+  '#FFF9D9', // 黄
+  '#ECF9E8', // 绿
+  '#E8F9F8', // 青
+  '#EAF2FF', // 蓝
+  '#F4ECFF', // 紫
+  '#F2F3F5', // 灰
+]
 
 const initialTasks = [
   {
@@ -10,8 +19,8 @@ const initialTasks = [
     title: '收玩具',
     points: 5,
     note: '整理自己的玩具',
-    icon: 'tidy',
-    color: '#F5F9EB',
+    icon: 'clean',
+    color: '#ECF9E8',
     status: 'todo',
   },
   {
@@ -20,7 +29,7 @@ const initialTasks = [
     points: 5,
     note: '今天的作业任务',
     icon: 'homework',
-    color: '#EDF5FF',
+    color: '#EAF2FF',
     status: 'todo',
   },
 ]
@@ -29,8 +38,8 @@ const emptyForm = {
   title: '',
   points: 5,
   note: '',
-  icon: 'star',
-  color: '#FFFFFF',
+  icon: 'reward',
+  color: '#FFF3E2',
 }
 
 export default function App() {
@@ -61,8 +70,8 @@ export default function App() {
       title: task.title,
       points: task.points,
       note: task.note || '',
-      icon: task.icon || 'star',
-      color: task.color || '#FFFFFF',
+      icon: task.icon || 'reward',
+      color: task.color || '#FFF3E2',
     })
     setShowTaskModal(true)
   }
@@ -132,20 +141,20 @@ export default function App() {
   }
 
   return (
-    <main className="mx-auto min-h-screen w-full max-w-md bg-[#F8F4E9] px-4 pb-24 pt-6">
-      <section className="relative overflow-hidden rounded-[30px] border border-amber-900/10 bg-white p-5 shadow-[0_15px_35px_rgba(47,35,26,0.08)]">
-        <h1 className="pr-28 text-[42px] font-black leading-tight text-ink">今天继续加油吧！</h1>
+    <main className="mx-auto min-h-screen w-full max-w-md bg-[#F8F4E9] px-4 pb-24 pt-5">
+      <section className="relative overflow-hidden rounded-[28px] border border-amber-900/10 bg-white p-5 shadow-[0_12px_28px_rgba(47,35,26,0.08)]">
+        <h1 className="pr-24 text-[34px] font-extrabold leading-tight text-[#3A3531]">今天继续加油吧！</h1>
 
-        <div className="mt-4 rounded-[24px] border border-slate-100 bg-[#FAFAFA] p-5">
-          <p className="text-6xl font-black leading-none text-[#D97C3B]">{totalPoints}</p>
-          <p className="mt-2 text-2xl text-slate-600">当前积分</p>
+        <div className="mt-4 rounded-[22px] border border-slate-100 bg-[#FCFCFC] p-5">
+          <p className="text-[64px] font-black leading-none text-[#D97C3B]">{totalPoints}</p>
+          <p className="mt-1 text-[30px] text-slate-600">当前积分</p>
         </div>
 
-        <div className="pointer-events-none absolute right-4 top-4">
-          <div className="relative flex h-24 w-24 items-end justify-center rounded-full bg-gradient-to-br from-[#FFD28A] to-[#F29E4C] shadow-md">
-            <span className="text-5xl">🦊</span>
-            <span className="absolute -left-4 top-5 text-2xl text-[#F5CC55]">✦</span>
-            <span className="absolute -left-2 top-10 text-lg text-[#F5CC55]">✧</span>
+        <div className="pointer-events-none absolute right-4 top-5">
+          <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-[#FFDDA6] to-[#F3A75B] shadow-md">
+            <span className="text-4xl">🦊</span>
+            <span className="absolute -left-3 top-2 text-xl text-[#F5CC55]">✦</span>
+            <span className="absolute -left-1 top-8 text-base text-[#F5CC55]">✧</span>
           </div>
         </div>
       </section>
@@ -153,16 +162,16 @@ export default function App() {
       <button
         type="button"
         onClick={openCreateModal}
-        className="mt-5 flex w-full items-center justify-center gap-2 rounded-full border-4 border-[#90B347] bg-[#91B54A] py-4 text-[38px] font-black text-white shadow-[inset_0_-5px_0_rgba(66,92,22,0.5)]"
+        className="mt-5 flex w-full items-center justify-center gap-2 rounded-full border-[3px] border-[#8DAE46] bg-[#90B347] py-3 text-[28px] font-bold text-white shadow-[inset_0_-4px_0_rgba(58,85,18,0.42)]"
       >
-        <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#688A2B] text-[28px] leading-none">+</span>
+        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#6D8D2D] text-[24px] leading-none">+</span>
         新增任务
       </button>
 
       <section className="mt-6">
         <div className="mb-3 flex items-center justify-between px-1">
-          <h2 className="text-4xl font-bold text-ink">任务清单</h2>
-          <span className="rounded-full border border-amber-900/10 bg-[#FFF2E7] px-4 py-1 text-2xl text-slate-600">
+          <h2 className="text-[40px] font-bold text-[#3A3531]">任务清单</h2>
+          <span className="rounded-full border border-amber-900/10 bg-[#FFF2E7] px-4 py-1 text-[24px] text-slate-600">
             {uncompletedTasks.length} 项
           </span>
         </div>
@@ -173,7 +182,7 @@ export default function App() {
               <TaskCard key={task.id} task={task} onComplete={completeTask} onLongPress={handleLongPress} />
             ))
           ) : (
-            <div className="rounded-2xl border border-dashed border-amber-900/15 bg-white/60 p-6 text-center text-slate-500">
+            <div className="rounded-2xl border border-dashed border-amber-900/15 bg-white/70 p-5 text-center text-base text-slate-500">
               太棒了，当前没有未完成任务 🎉
             </div>
           )}
@@ -181,7 +190,7 @@ export default function App() {
       </section>
 
       <nav className="fixed bottom-0 left-0 right-0 border-t border-amber-900/10 bg-white/95 backdrop-blur">
-        <div className="mx-auto grid max-w-md grid-cols-3 px-5 py-2 text-2xl">
+        <div className="mx-auto grid max-w-md grid-cols-3 px-5 py-2 text-[18px]">
           <button className="rounded-full bg-[#F9E08E] py-2 font-semibold text-amber-900">任务</button>
           <button className="py-2 text-slate-500">奖励</button>
           <button className="py-2 text-slate-500">记录</button>
@@ -192,7 +201,7 @@ export default function App() {
         <div className="fixed inset-0 z-20 flex items-end bg-black/35 p-4">
           <div className="w-full rounded-3xl bg-white p-5 shadow-xl">
             <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-2xl font-bold text-ink">{editingTaskId ? '编辑任务' : '新增任务'}</h3>
+              <h3 className="text-xl font-bold text-ink">{editingTaskId ? '编辑任务' : '新增任务'}</h3>
               <button type="button" className="text-slate-500" onClick={closeTaskModal}>
                 关闭
               </button>
@@ -204,7 +213,7 @@ export default function App() {
                 <input
                   value={form.title}
                   onChange={(e) => setForm((prev) => ({ ...prev, title: e.target.value }))}
-                  className="w-full rounded-xl border border-slate-200 px-3 py-2 text-base outline-none focus:border-[#8BAE3F]"
+                  className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-[#8BAE3F]"
                   placeholder="例如：整理书桌"
                   required
                 />
@@ -217,7 +226,7 @@ export default function App() {
                   min="1"
                   value={form.points}
                   onChange={(e) => setForm((prev) => ({ ...prev, points: e.target.value }))}
-                  className="w-full rounded-xl border border-slate-200 px-3 py-2 text-base outline-none focus:border-[#8BAE3F]"
+                  className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-[#8BAE3F]"
                   required
                 />
               </label>
@@ -230,14 +239,14 @@ export default function App() {
                       key={iconName}
                       type="button"
                       onClick={() => setForm((prev) => ({ ...prev, icon: iconName }))}
-                      className={`flex h-10 w-10 items-center justify-center rounded-xl border ${
+                      className={`flex h-11 w-11 items-center justify-center rounded-xl border ${
                         form.icon === iconName
-                          ? 'border-[#8BAE3F] bg-[#F2FBE8] text-[#4F6A16]'
-                          : 'border-slate-200 bg-white text-slate-500'
+                          ? 'border-[#8BAE3F] bg-[#F2FBE8]'
+                          : 'border-slate-200 bg-white'
                       }`}
                       aria-label={`icon-${iconName}`}
                     >
-                      <TaskIcon name={iconName} className="h-5 w-5" />
+                      <TaskIcon name={iconName} className="text-2xl" />
                     </button>
                   ))}
                 </div>
@@ -245,7 +254,7 @@ export default function App() {
 
               <div>
                 <span className="mb-1 block text-sm font-medium text-slate-700">卡片颜色（可选）</span>
-                <div className="flex gap-3">
+                <div className="grid grid-cols-8 gap-2">
                   {taskColors.map((color) => (
                     <button
                       key={color}
@@ -264,12 +273,12 @@ export default function App() {
                   rows="3"
                   value={form.note}
                   onChange={(e) => setForm((prev) => ({ ...prev, note: e.target.value }))}
-                  className="w-full rounded-xl border border-slate-200 px-3 py-2 text-base outline-none focus:border-[#8BAE3F]"
+                  className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-[#8BAE3F]"
                   placeholder="例如：睡前 8 点前完成"
                 />
               </label>
 
-              <button type="submit" className="w-full rounded-xl bg-[#8BAE3F] py-3 text-lg font-semibold text-white">
+              <button type="submit" className="w-full rounded-xl bg-[#8BAE3F] py-3 text-base font-semibold text-white">
                 {editingTaskId ? '保存修改' : '创建任务'}
               </button>
             </form>
@@ -284,7 +293,7 @@ export default function App() {
             <div className="space-y-2">
               <button
                 type="button"
-                className="w-full rounded-xl bg-[#EEF7DD] py-3 text-base font-semibold text-[#4F6A16]"
+                className="w-full rounded-xl bg-[#EEF7DD] py-3 text-sm font-semibold text-[#4F6A16]"
                 onClick={() => {
                   openEditModal(actionTask)
                   setActionTask(null)
@@ -294,14 +303,14 @@ export default function App() {
               </button>
               <button
                 type="button"
-                className="w-full rounded-xl bg-[#FDEAEA] py-3 text-base font-semibold text-[#B94141]"
+                className="w-full rounded-xl bg-[#FDEAEA] py-3 text-sm font-semibold text-[#B94141]"
                 onClick={handleDeleteTask}
               >
                 删除
               </button>
               <button
                 type="button"
-                className="w-full rounded-xl border border-slate-200 py-3 text-base text-slate-500"
+                className="w-full rounded-xl border border-slate-200 py-3 text-sm text-slate-500"
                 onClick={() => setActionTask(null)}
               >
                 取消

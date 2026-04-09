@@ -35,20 +35,20 @@ export default function TaskCard({ task, onComplete, onLongPress }) {
       onMouseLeave={endPress}
       onTouchStart={startPress}
       onTouchEnd={endPress}
-      className="w-full rounded-[24px] border border-amber-900/10 bg-white p-4 text-left shadow-[0_8px_22px_rgba(34,24,16,0.08)] transition active:scale-[0.99]"
+      className="w-full rounded-3xl border border-amber-900/10 bg-white p-4 text-left shadow-[0_6px_18px_rgba(34,24,16,0.08)] transition active:scale-[0.99]"
       style={{ backgroundColor: task.color || '#FFFFFF' }}
     >
       <div className="flex items-start justify-between gap-3">
-        <div className="flex items-start gap-3">
-          <span className="mt-1 flex h-12 w-12 items-center justify-center rounded-full bg-[#EEF3E0] text-[#668A2A]">
-            <TaskIcon name={task.icon} className="h-6 w-6" />
+        <div className="flex min-w-0 items-start gap-3">
+          <span className="mt-0.5 flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/80 shadow-inner">
+            <TaskIcon name={task.icon} className="text-[26px]" />
           </span>
-          <div>
-            <p className="text-[18px] font-bold leading-6 text-ink">{task.title}</p>
-            {task.note ? <p className="mt-1 text-sm text-slate-500">{task.note}</p> : null}
+          <div className="min-w-0">
+            <p className="truncate text-xl font-bold text-ink">{task.title}</p>
+            {task.note ? <p className="mt-1 truncate text-sm text-slate-500">{task.note}</p> : null}
           </div>
         </div>
-        <p className="pt-1 text-[40px] font-black leading-none text-[#D97C3B]">+{task.points}</p>
+        <p className="shrink-0 pt-0.5 text-3xl font-extrabold text-[#D97C3B]">+{task.points}</p>
       </div>
     </button>
   )
