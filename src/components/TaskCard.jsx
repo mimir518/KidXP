@@ -1,13 +1,5 @@
 import { useRef } from 'react'
-
-const iconMap = {
-  bag: '👜',
-  book: '📘',
-  broom: '🧹',
-  workout: '🏃',
-  star: '⭐',
-  default: '📝',
-}
+import TaskIcon from './TaskIcon'
 
 export default function TaskCard({ task, onComplete, onLongPress }) {
   const timerRef = useRef(null)
@@ -43,20 +35,20 @@ export default function TaskCard({ task, onComplete, onLongPress }) {
       onMouseLeave={endPress}
       onTouchStart={startPress}
       onTouchEnd={endPress}
-      className="w-full rounded-[22px] border border-amber-900/10 bg-white p-4 text-left shadow-soft transition active:scale-[0.99]"
+      className="w-full rounded-[24px] border border-amber-900/10 bg-white p-4 text-left shadow-[0_8px_22px_rgba(34,24,16,0.08)] transition active:scale-[0.99]"
       style={{ backgroundColor: task.color || '#FFFFFF' }}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-start gap-3">
-          <span className="mt-0.5 flex h-10 w-10 items-center justify-center rounded-full bg-white/70 text-xl">
-            {iconMap[task.icon] || iconMap.default}
+          <span className="mt-1 flex h-12 w-12 items-center justify-center rounded-full bg-[#EEF3E0] text-[#668A2A]">
+            <TaskIcon name={task.icon} className="h-6 w-6" />
           </span>
           <div>
-            <p className="text-[20px] font-semibold leading-6 text-ink">{task.title}</p>
-            {task.note ? <p className="mt-1 text-sm text-slate-600/90 line-clamp-2">{task.note}</p> : null}
+            <p className="text-[18px] font-bold leading-6 text-ink">{task.title}</p>
+            {task.note ? <p className="mt-1 text-sm text-slate-500">{task.note}</p> : null}
           </div>
         </div>
-        <p className="text-3xl font-bold leading-none text-[#D97C3B]">+{task.points}</p>
+        <p className="pt-1 text-[40px] font-black leading-none text-[#D97C3B]">+{task.points}</p>
       </div>
     </button>
   )

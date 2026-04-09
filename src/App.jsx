@@ -1,14 +1,8 @@
 import { useMemo, useState } from 'react'
 import TaskCard from './components/TaskCard'
+import TaskIcon, { iconOptions } from './components/TaskIcon'
 
-const taskColors = ['#FFFFFF', '#F2FBE8', '#EAF5FF', '#FFF4DF', '#FDEEF9']
-const taskIcons = [
-  { label: '书包', value: 'bag', emoji: '👜' },
-  { label: '学习', value: 'book', emoji: '📘' },
-  { label: '家务', value: 'broom', emoji: '🧹' },
-  { label: '运动', value: 'workout', emoji: '🏃' },
-  { label: '通用', value: 'star', emoji: '⭐' },
-]
+const taskColors = ['#FFFFFF', '#F5F9EB', '#EDF5FF', '#FFF4E5', '#F9EFFA', '#EFFFF8']
 
 const initialTasks = [
   {
@@ -16,8 +10,8 @@ const initialTasks = [
     title: '收玩具',
     points: 5,
     note: '整理自己的玩具',
-    icon: 'bag',
-    color: '#F2FBE8',
+    icon: 'tidy',
+    color: '#F5F9EB',
     status: 'todo',
   },
   {
@@ -25,8 +19,8 @@ const initialTasks = [
     title: '完成作业',
     points: 5,
     note: '今天的作业任务',
-    icon: 'book',
-    color: '#EAF5FF',
+    icon: 'homework',
+    color: '#EDF5FF',
     status: 'todo',
   },
 ]
@@ -44,9 +38,16 @@ export default function App() {
   const [totalPoints, setTotalPoints] = useState(24)
   const [showTaskModal, setShowTaskModal] = useState(false)
   const [editingTaskId, setEditingTaskId] = useState(null)
+  const [actionTask, setActionTask] = useState(null)
   const [form, setForm] = useState(emptyForm)
 
   const uncompletedTasks = useMemo(() => tasks.filter((task) => task.status === 'todo'), [tasks])
+
+  const closeTaskModal = () => {
+    setShowTaskModal(false)
+    setEditingTaskId(null)
+    setForm(emptyForm)
+  }
 
   const openCreateModal = () => {
     setEditingTaskId(null)
@@ -106,9 +107,7 @@ export default function App() {
       ])
     }
 
-    setShowTaskModal(false)
-    setEditingTaskId(null)
-    setForm(emptyForm)
+    closeTaskModal()
   }
 
   const completeTask = (id) => {
@@ -120,38 +119,44 @@ export default function App() {
   }
 
   const handleLongPress = (task) => {
-    const choice = window.prompt('输入 1 编辑任务，输入 2 删除任务', '1')
+    setActionTask(task)
+  }
 
-    if (choice === '1') {
-      openEditModal(task)
-      return
-    }
-
-    if (choice === '2') {
-      const shouldDelete = window.confirm('确定要删除这个任务吗？')
-      if (shouldDelete) {
-        setTasks((prev) => prev.filter((item) => item.id !== task.id))
-      }
+  const handleDeleteTask = () => {
+    if (!actionTask) return
+    const shouldDelete = window.confirm('确定要删除这个任务吗？')
+    if (shouldDelete) {
+      setTasks((prev) => prev.filter((item) => item.id !== actionTask.id))
+      setActionTask(null)
     }
   }
 
   return (
     <main className="mx-auto min-h-screen w-full max-w-md bg-[#F8F4E9] px-4 pb-24 pt-6">
-      <section className="rounded-[28px] border border-amber-900/10 bg-white p-5 shadow-soft">
-        <h1 className="text-4xl font-black text-ink">今天继续加油吧！</h1>
+      <section className="relative overflow-hidden rounded-[30px] border border-amber-900/10 bg-white p-5 shadow-[0_15px_35px_rgba(47,35,26,0.08)]">
+        <h1 className="pr-28 text-[42px] font-black leading-tight text-ink">今天继续加油吧！</h1>
 
-        <div className="mt-4 rounded-[24px] border border-amber-900/10 bg-[#FAFAFA] p-5">
+        <div className="mt-4 rounded-[24px] border border-slate-100 bg-[#FAFAFA] p-5">
           <p className="text-6xl font-black leading-none text-[#D97C3B]">{totalPoints}</p>
           <p className="mt-2 text-2xl text-slate-600">当前积分</p>
+        </div>
+
+        <div className="pointer-events-none absolute right-4 top-4">
+          <div className="relative flex h-24 w-24 items-end justify-center rounded-full bg-gradient-to-br from-[#FFD28A] to-[#F29E4C] shadow-md">
+            <span className="text-5xl">🦊</span>
+            <span className="absolute -left-4 top-5 text-2xl text-[#F5CC55]">✦</span>
+            <span className="absolute -left-2 top-10 text-lg text-[#F5CC55]">✧</span>
+          </div>
         </div>
       </section>
 
       <button
         type="button"
         onClick={openCreateModal}
-        className="mt-5 w-full rounded-full bg-[#8BAE3F] py-4 text-3xl font-bold text-white shadow-[inset_0_-4px_0_rgba(0,0,0,0.1)]"
+        className="mt-5 flex w-full items-center justify-center gap-2 rounded-full border-4 border-[#90B347] bg-[#91B54A] py-4 text-[38px] font-black text-white shadow-[inset_0_-5px_0_rgba(66,92,22,0.5)]"
       >
-        + 新增任务
+        <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#688A2B] text-[28px] leading-none">+</span>
+        新增任务
       </button>
 
       <section className="mt-6">
@@ -184,11 +189,11 @@ export default function App() {
       </nav>
 
       {showTaskModal ? (
-        <div className="fixed inset-0 z-20 flex items-end bg-black/30 p-4">
+        <div className="fixed inset-0 z-20 flex items-end bg-black/35 p-4">
           <div className="w-full rounded-3xl bg-white p-5 shadow-xl">
             <div className="mb-4 flex items-center justify-between">
               <h3 className="text-2xl font-bold text-ink">{editingTaskId ? '编辑任务' : '新增任务'}</h3>
-              <button type="button" className="text-slate-500" onClick={() => setShowTaskModal(false)}>
+              <button type="button" className="text-slate-500" onClick={closeTaskModal}>
                 关闭
               </button>
             </div>
@@ -219,19 +224,20 @@ export default function App() {
 
               <div>
                 <span className="mb-1 block text-sm font-medium text-slate-700">小图标（可选）</span>
-                <div className="flex flex-wrap gap-2">
-                  {taskIcons.map((icon) => (
+                <div className="grid grid-cols-6 gap-2">
+                  {iconOptions.map((iconName) => (
                     <button
-                      key={icon.value}
+                      key={iconName}
                       type="button"
-                      onClick={() => setForm((prev) => ({ ...prev, icon: icon.value }))}
-                      className={`rounded-full border px-3 py-1 text-sm ${
-                        form.icon === icon.value
+                      onClick={() => setForm((prev) => ({ ...prev, icon: iconName }))}
+                      className={`flex h-10 w-10 items-center justify-center rounded-xl border ${
+                        form.icon === iconName
                           ? 'border-[#8BAE3F] bg-[#F2FBE8] text-[#4F6A16]'
                           : 'border-slate-200 bg-white text-slate-500'
                       }`}
+                      aria-label={`icon-${iconName}`}
                     >
-                      {icon.emoji} {icon.label}
+                      <TaskIcon name={iconName} className="h-5 w-5" />
                     </button>
                   ))}
                 </div>
@@ -267,6 +273,40 @@ export default function App() {
                 {editingTaskId ? '保存修改' : '创建任务'}
               </button>
             </form>
+          </div>
+        </div>
+      ) : null}
+
+      {actionTask ? (
+        <div className="fixed inset-0 z-30 flex items-end bg-black/35 p-4" onClick={() => setActionTask(null)}>
+          <div className="w-full rounded-3xl bg-white p-4 shadow-xl" onClick={(e) => e.stopPropagation()}>
+            <p className="mb-3 text-center text-sm text-slate-500">对“{actionTask.title}”执行操作</p>
+            <div className="space-y-2">
+              <button
+                type="button"
+                className="w-full rounded-xl bg-[#EEF7DD] py-3 text-base font-semibold text-[#4F6A16]"
+                onClick={() => {
+                  openEditModal(actionTask)
+                  setActionTask(null)
+                }}
+              >
+                编辑
+              </button>
+              <button
+                type="button"
+                className="w-full rounded-xl bg-[#FDEAEA] py-3 text-base font-semibold text-[#B94141]"
+                onClick={handleDeleteTask}
+              >
+                删除
+              </button>
+              <button
+                type="button"
+                className="w-full rounded-xl border border-slate-200 py-3 text-base text-slate-500"
+                onClick={() => setActionTask(null)}
+              >
+                取消
+              </button>
+            </div>
           </div>
         </div>
       ) : null}
