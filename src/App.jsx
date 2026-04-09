@@ -1,126 +1,275 @@
 import { useMemo, useState } from 'react'
-import PetBadge from './components/PetBadge'
 import TaskCard from './components/TaskCard'
 
-const initialTasks = [
-  { id: 't1', title: '整理书包', points: 5, done: false },
-  { id: 't2', title: '阅读 20 分钟', points: 8, done: false },
-  { id: 't3', title: '饭后整理桌面', points: 6, done: false },
+const taskColors = ['#FFFFFF', '#F2FBE8', '#EAF5FF', '#FFF4DF', '#FDEEF9']
+const taskIcons = [
+  { label: '书包', value: 'bag', emoji: '👜' },
+  { label: '学习', value: 'book', emoji: '📘' },
+  { label: '家务', value: 'broom', emoji: '🧹' },
+  { label: '运动', value: 'workout', emoji: '🏃' },
+  { label: '通用', value: 'star', emoji: '⭐' },
 ]
+
+const initialTasks = [
+  {
+    id: 't1',
+    title: '收玩具',
+    points: 5,
+    note: '整理自己的玩具',
+    icon: 'bag',
+    color: '#F2FBE8',
+    status: 'todo',
+  },
+  {
+    id: 't2',
+    title: '完成作业',
+    points: 5,
+    note: '今天的作业任务',
+    icon: 'book',
+    color: '#EAF5FF',
+    status: 'todo',
+  },
+]
+
+const emptyForm = {
+  title: '',
+  points: 5,
+  note: '',
+  icon: 'star',
+  color: '#FFFFFF',
+}
 
 export default function App() {
   const [tasks, setTasks] = useState(initialTasks)
-  const [taskName, setTaskName] = useState('')
-  const [taskPoints, setTaskPoints] = useState(5)
-  const [animatePoints, setAnimatePoints] = useState(false)
+  const [totalPoints, setTotalPoints] = useState(24)
+  const [showTaskModal, setShowTaskModal] = useState(false)
+  const [editingTaskId, setEditingTaskId] = useState(null)
+  const [form, setForm] = useState(emptyForm)
 
-  const points = useMemo(
-    () => tasks.filter((task) => task.done).reduce((sum, task) => sum + task.points, 0),
-    [tasks],
-  )
+  const uncompletedTasks = useMemo(() => tasks.filter((task) => task.status === 'todo'), [tasks])
+
+  const openCreateModal = () => {
+    setEditingTaskId(null)
+    setForm(emptyForm)
+    setShowTaskModal(true)
+  }
+
+  const openEditModal = (task) => {
+    setEditingTaskId(task.id)
+    setForm({
+      title: task.title,
+      points: task.points,
+      note: task.note || '',
+      icon: task.icon || 'star',
+      color: task.color || '#FFFFFF',
+    })
+    setShowTaskModal(true)
+  }
+
+  const submitTask = (event) => {
+    event.preventDefault()
+
+    const title = form.title.trim()
+    const points = Number(form.points)
+
+    if (!title || Number.isNaN(points) || points < 1) {
+      return
+    }
+
+    if (editingTaskId) {
+      setTasks((prev) =>
+        prev.map((task) =>
+          task.id === editingTaskId
+            ? {
+                ...task,
+                title,
+                points,
+                note: form.note.trim(),
+                icon: form.icon,
+                color: form.color,
+              }
+            : task,
+        ),
+      )
+    } else {
+      setTasks((prev) => [
+        {
+          id: crypto.randomUUID(),
+          title,
+          points,
+          note: form.note.trim(),
+          icon: form.icon,
+          color: form.color,
+          status: 'todo',
+        },
+        ...prev,
+      ])
+    }
+
+    setShowTaskModal(false)
+    setEditingTaskId(null)
+    setForm(emptyForm)
+  }
 
   const completeTask = (id) => {
-    setTasks((prev) => prev.map((task) => (task.id === id && !task.done ? { ...task, done: true } : task)))
-    setAnimatePoints(true)
-    setTimeout(() => setAnimatePoints(false), 360)
+    const target = tasks.find((task) => task.id === id)
+    if (!target || target.status !== 'todo') return
+
+    setTasks((prev) => prev.map((task) => (task.id === id ? { ...task, status: 'done' } : task)))
+    setTotalPoints((prev) => prev + target.points)
   }
 
-  const addTask = (event) => {
-    event.preventDefault()
-    if (!taskName.trim() || Number(taskPoints) < 1) return
+  const handleLongPress = (task) => {
+    const choice = window.prompt('输入 1 编辑任务，输入 2 删除任务', '1')
 
-    setTasks((prev) => [
-      {
-        id: crypto.randomUUID(),
-        title: taskName.trim(),
-        points: Number(taskPoints),
-        done: false,
-      },
-      ...prev,
-    ])
+    if (choice === '1') {
+      openEditModal(task)
+      return
+    }
 
-    setTaskName('')
-    setTaskPoints(5)
+    if (choice === '2') {
+      const shouldDelete = window.confirm('确定要删除这个任务吗？')
+      if (shouldDelete) {
+        setTasks((prev) => prev.filter((item) => item.id !== task.id))
+      }
+    }
   }
-
-  const doneCount = tasks.filter((task) => task.done).length
 
   return (
-    <main className="mx-auto min-h-screen w-full max-w-md bg-[#F8F4E9] px-4 pb-10 pt-5">
-      <header className="rounded-[28px] border border-amber-900/10 bg-[#F9F2B8] p-5 shadow-soft">
-        <div className="mb-4 flex items-center justify-between">
-          <div>
-            <p className="text-xs text-amber-900/70">KidXP 家庭任务</p>
-            <h1 className="mt-1 text-2xl font-bold text-ink">今天也要加油呀</h1>
-          </div>
-          <div className="h-12 w-12 rounded-2xl border border-amber-900/10 bg-white/80 text-center text-2xl leading-[48px]">
-            🐾
-          </div>
-        </div>
+    <main className="mx-auto min-h-screen w-full max-w-md bg-[#F8F4E9] px-4 pb-24 pt-6">
+      <section className="rounded-[28px] border border-amber-900/10 bg-white p-5 shadow-soft">
+        <h1 className="text-4xl font-black text-ink">今天继续加油吧！</h1>
 
-        <div className="rounded-2xl border border-amber-900/10 bg-white/80 p-4">
-          <p className="text-xs text-slate-500">当前积分</p>
-          <p className={`text-4xl font-bold text-ink ${animatePoints ? 'animate-pop' : ''}`}>{points}</p>
-          <div className="mt-2 flex items-center gap-2 text-xs text-slate-500">
-            <span>已完成 {doneCount} 项</span>
-            <span>•</span>
-            <span>待完成 {tasks.length - doneCount} 项</span>
-          </div>
+        <div className="mt-4 rounded-[24px] border border-amber-900/10 bg-[#FAFAFA] p-5">
+          <p className="text-6xl font-black leading-none text-[#D97C3B]">{totalPoints}</p>
+          <p className="mt-2 text-2xl text-slate-600">当前积分</p>
         </div>
-      </header>
-
-      <section className="mt-4 rounded-[24px] border border-amber-900/10 bg-[#FFE5C8] p-4 shadow-soft">
-        <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-base font-semibold text-ink">新任务卡片</h2>
-          <div className="flex items-center gap-1.5">
-            <PetBadge type="fox" active />
-            <PetBadge type="cat" />
-          </div>
-        </div>
-
-        <form className="space-y-3" onSubmit={addTask}>
-          <input
-            value={taskName}
-            onChange={(e) => setTaskName(e.target.value)}
-            className="w-full rounded-2xl border border-amber-900/10 bg-white px-3 py-2.5 text-sm outline-none ring-2 ring-transparent placeholder:text-slate-400 focus:ring-warn"
-            placeholder="输入任务名称（如：收玩具）"
-          />
-          <div className="flex items-center gap-2">
-            <input
-              type="number"
-              min="1"
-              value={taskPoints}
-              onChange={(e) => setTaskPoints(e.target.value)}
-              className="w-24 rounded-2xl border border-amber-900/10 bg-white px-3 py-2 text-sm outline-none ring-2 ring-transparent focus:ring-warn"
-            />
-            <span className="text-sm text-amber-900/70">积分</span>
-            <button
-              type="submit"
-              className="ml-auto rounded-full bg-warn px-4 py-2 text-sm font-semibold text-white transition active:scale-95"
-            >
-              添加任务
-            </button>
-          </div>
-        </form>
       </section>
 
-      <section className="mt-4 space-y-3 pb-20">
-        <div className="flex items-center justify-between px-1">
-          <h2 className="text-lg font-semibold text-ink">任务清单</h2>
-          <span className="rounded-full bg-white px-2.5 py-1 text-xs text-slate-500 shadow-sm">{tasks.length} 项</span>
+      <button
+        type="button"
+        onClick={openCreateModal}
+        className="mt-5 w-full rounded-full bg-[#8BAE3F] py-4 text-3xl font-bold text-white shadow-[inset_0_-4px_0_rgba(0,0,0,0.1)]"
+      >
+        + 新增任务
+      </button>
+
+      <section className="mt-6">
+        <div className="mb-3 flex items-center justify-between px-1">
+          <h2 className="text-4xl font-bold text-ink">任务清单</h2>
+          <span className="rounded-full border border-amber-900/10 bg-[#FFF2E7] px-4 py-1 text-2xl text-slate-600">
+            {uncompletedTasks.length} 项
+          </span>
         </div>
-        {tasks.map((task) => (
-          <TaskCard key={task.id} task={task} onComplete={completeTask} />
-        ))}
+
+        <div className="space-y-3">
+          {uncompletedTasks.length > 0 ? (
+            uncompletedTasks.map((task) => (
+              <TaskCard key={task.id} task={task} onComplete={completeTask} onLongPress={handleLongPress} />
+            ))
+          ) : (
+            <div className="rounded-2xl border border-dashed border-amber-900/15 bg-white/60 p-6 text-center text-slate-500">
+              太棒了，当前没有未完成任务 🎉
+            </div>
+          )}
+        </div>
       </section>
 
       <nav className="fixed bottom-0 left-0 right-0 border-t border-amber-900/10 bg-white/95 backdrop-blur">
-        <div className="mx-auto grid max-w-md grid-cols-3 px-5 py-2 text-xs">
-          <button className="rounded-full bg-[#F9F2B8] py-2 font-semibold text-amber-900">任务</button>
+        <div className="mx-auto grid max-w-md grid-cols-3 px-5 py-2 text-2xl">
+          <button className="rounded-full bg-[#F9E08E] py-2 font-semibold text-amber-900">任务</button>
           <button className="py-2 text-slate-500">奖励</button>
           <button className="py-2 text-slate-500">记录</button>
         </div>
       </nav>
+
+      {showTaskModal ? (
+        <div className="fixed inset-0 z-20 flex items-end bg-black/30 p-4">
+          <div className="w-full rounded-3xl bg-white p-5 shadow-xl">
+            <div className="mb-4 flex items-center justify-between">
+              <h3 className="text-2xl font-bold text-ink">{editingTaskId ? '编辑任务' : '新增任务'}</h3>
+              <button type="button" className="text-slate-500" onClick={() => setShowTaskModal(false)}>
+                关闭
+              </button>
+            </div>
+
+            <form className="space-y-4" onSubmit={submitTask}>
+              <label className="block">
+                <span className="mb-1 block text-sm font-medium text-slate-700">任务名称 *</span>
+                <input
+                  value={form.title}
+                  onChange={(e) => setForm((prev) => ({ ...prev, title: e.target.value }))}
+                  className="w-full rounded-xl border border-slate-200 px-3 py-2 text-base outline-none focus:border-[#8BAE3F]"
+                  placeholder="例如：整理书桌"
+                  required
+                />
+              </label>
+
+              <label className="block">
+                <span className="mb-1 block text-sm font-medium text-slate-700">任务积分 *</span>
+                <input
+                  type="number"
+                  min="1"
+                  value={form.points}
+                  onChange={(e) => setForm((prev) => ({ ...prev, points: e.target.value }))}
+                  className="w-full rounded-xl border border-slate-200 px-3 py-2 text-base outline-none focus:border-[#8BAE3F]"
+                  required
+                />
+              </label>
+
+              <div>
+                <span className="mb-1 block text-sm font-medium text-slate-700">小图标（可选）</span>
+                <div className="flex flex-wrap gap-2">
+                  {taskIcons.map((icon) => (
+                    <button
+                      key={icon.value}
+                      type="button"
+                      onClick={() => setForm((prev) => ({ ...prev, icon: icon.value }))}
+                      className={`rounded-full border px-3 py-1 text-sm ${
+                        form.icon === icon.value
+                          ? 'border-[#8BAE3F] bg-[#F2FBE8] text-[#4F6A16]'
+                          : 'border-slate-200 bg-white text-slate-500'
+                      }`}
+                    >
+                      {icon.emoji} {icon.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <span className="mb-1 block text-sm font-medium text-slate-700">卡片颜色（可选）</span>
+                <div className="flex gap-3">
+                  {taskColors.map((color) => (
+                    <button
+                      key={color}
+                      type="button"
+                      onClick={() => setForm((prev) => ({ ...prev, color }))}
+                      className={`h-8 w-8 rounded-full border-2 ${form.color === color ? 'border-slate-700' : 'border-white'}`}
+                      style={{ backgroundColor: color }}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <label className="block">
+                <span className="mb-1 block text-sm font-medium text-slate-700">备注 / 详细内容（可选）</span>
+                <textarea
+                  rows="3"
+                  value={form.note}
+                  onChange={(e) => setForm((prev) => ({ ...prev, note: e.target.value }))}
+                  className="w-full rounded-xl border border-slate-200 px-3 py-2 text-base outline-none focus:border-[#8BAE3F]"
+                  placeholder="例如：睡前 8 点前完成"
+                />
+              </label>
+
+              <button type="submit" className="w-full rounded-xl bg-[#8BAE3F] py-3 text-lg font-semibold text-white">
+                {editingTaskId ? '保存修改' : '创建任务'}
+              </button>
+            </form>
+          </div>
+        </div>
+      ) : null}
     </main>
   )
 }
