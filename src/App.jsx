@@ -2,16 +2,7 @@ import { useMemo, useState } from 'react'
 import TaskCard from './components/TaskCard'
 import TaskIcon, { iconOptions } from './components/TaskIcon'
 
-const taskColors = [
-  '#FFEFF0',
-  '#FFF3E6',
-  '#FFF8DE',
-  '#EFF8E8',
-  '#EAF8F7',
-  '#EDF4FF',
-  '#F2EDFF',
-  '#F2F3F5',
-]
+const taskColors = ['#FFEFF0', '#FFF3E6', '#FFF8DE', '#EFF8E8', '#EAF8F7', '#EDF4FF', '#F2EDFF', '#F2F3F5']
 
 const initialTasks = [
   {
@@ -50,7 +41,7 @@ export default function App() {
   const [actionTask, setActionTask] = useState(null)
   const [form, setForm] = useState(emptyForm)
 
-  const uncompletedTasks = useMemo(() => tasks.filter((task) => task.status === 'todo'), [tasks])
+  const activeTasks = useMemo(() => tasks.filter((task) => task.status !== 'done'), [tasks])
 
   const closeTaskModal = () => {
     setShowTaskModal(false)
@@ -112,8 +103,12 @@ export default function App() {
     const target = tasks.find((task) => task.id === id)
     if (!target || target.status !== 'todo') return
 
-    setTasks((prev) => prev.map((task) => (task.id === id ? { ...task, status: 'done' } : task)))
+    setTasks((prev) => prev.map((task) => (task.id === id ? { ...task, status: 'completing' } : task)))
     setTotalPoints((prev) => prev + target.points)
+
+    window.setTimeout(() => {
+      setTasks((prev) => prev.map((task) => (task.id === id ? { ...task, status: 'done' } : task)))
+    }, 650)
   }
 
   const handleDeleteTask = () => {
@@ -128,41 +123,36 @@ export default function App() {
   return (
     <main className="mx-auto min-h-screen w-full max-w-md bg-[#F6F1E3] px-6 pb-24 pt-6">
       <section className="relative rounded-[28px] border border-[#E9E3DA] bg-[#FCFAF7] p-5 shadow-[0_6px_18px_rgba(70,57,34,0.08)]">
-        <h1 className="text-[28px] font-bold text-[#2F3540]">今天继续加油吧！</h1>
-        <div className="mt-4 rounded-[24px] border border-[#EEE8E0] bg-[#FEFCFA] p-6">
-          <p className="text-[76px] font-black leading-[1] text-[#D97A34]">{totalPoints}</p>
-          <p className="mt-2 text-[18px] text-[#6B7280]">当前积分</p>
+        <h1 className="text-[26px] font-semibold text-[#2F3540]">今天继续加油吧！</h1>
+        <div className="mt-4 rounded-[24px] border border-[#EEE8E0] bg-[#FEFCFA] px-5 py-4">
+          <p className="text-[58px] font-bold leading-[1] text-[#D97A34]">{totalPoints}</p>
+          <p className="mt-2 text-[17px] text-[#6B7280]">当前积分</p>
         </div>
 
-        <div className="pointer-events-none absolute right-5 top-6 flex items-start gap-1">
-          <div className="pt-5 text-[#F3CC55]">
-            <span className="mr-1 text-lg">✦</span>
-            <span className="text-sm">✧</span>
-          </div>
-          <span className="text-[68px] leading-none">🦊</span>
+        <div className="pointer-events-none absolute right-5 top-6 flex items-center gap-2 rounded-full bg-[#FFF7E8] px-2 py-1 shadow-[0_4px_10px_rgba(70,57,34,0.06)]">
+          <span className="text-sm text-[#F3CC55]">✦</span>
+          <span className="text-[30px] leading-none">🦊</span>
         </div>
       </section>
 
       <button
         type="button"
         onClick={openCreateModal}
-        className="mt-5 flex w-full items-center justify-center rounded-full border-[2px] border-[#88A53E] bg-[#9DBB4E] py-3 text-[22px] font-semibold text-white shadow-[0_6px_18px_rgba(70,57,34,0.08)]"
+        className="mt-5 flex w-full items-center justify-center rounded-full border-[2px] border-[#88A53E] bg-[#9DBB4E] py-3 text-[20px] font-semibold text-white shadow-[0_6px_18px_rgba(70,57,34,0.08)]"
       >
-        <span className="mr-3 flex h-8 w-8 items-center justify-center rounded-full bg-[#88A53E] text-[22px] leading-none">+</span>
+        <span className="mr-3 flex h-7 w-7 items-center justify-center rounded-full bg-[#88A53E] text-[20px] leading-none">+</span>
         新增任务
       </button>
 
       <section className="mt-5">
         <div className="mb-3 flex items-center justify-between px-1">
-          <h2 className="text-[22px] font-semibold text-[#2F3540]">任务清单</h2>
-          <span className="rounded-full border border-[#E5DCCD] bg-[#F7ECE0] px-4 py-1 text-[16px] text-[#6B7280]">
-            {uncompletedTasks.length} 项
-          </span>
+          <h2 className="text-[20px] font-semibold text-[#2F3540]">任务清单</h2>
+          <span className="rounded-full border border-[#E5DCCD] bg-[#F7ECE0] px-4 py-1 text-[15px] text-[#6B7280]">{activeTasks.length} 项</span>
         </div>
 
         <div className="space-y-4">
-          {uncompletedTasks.length ? (
-            uncompletedTasks.map((task) => <TaskCard key={task.id} task={task} onComplete={completeTask} onLongPress={setActionTask} />)
+          {activeTasks.length ? (
+            activeTasks.map((task) => <TaskCard key={task.id} task={task} onComplete={completeTask} onLongPress={setActionTask} />)
           ) : (
             <div className="rounded-[24px] border border-dashed border-[#DED5C8] bg-[#FEFCFA] p-6 text-center text-[#6B7280]">
               太棒了，当前没有未完成任务 🎉
@@ -172,15 +162,15 @@ export default function App() {
       </section>
 
       <nav className="fixed bottom-0 left-0 right-0 border-t border-[#E6DED2] bg-[#FCFAF7]/95 backdrop-blur">
-        <div className="mx-auto grid max-w-md grid-cols-3 px-5 py-1.5 text-[16px]">
-          <button className="flex items-center justify-center gap-2 rounded-full bg-[#F0D78A] py-2 font-medium text-[#2F3540]">
-            <TaskIcon name="bag" className="h-5 w-5" />任务
+        <div className="mx-auto grid max-w-md grid-cols-3 px-5 py-1.5 text-[15px]">
+          <button className="flex items-center justify-center gap-1.5 rounded-full bg-[#F0D78A] py-1.5 font-medium text-[#2F3540]">
+            <TaskIcon name="bag" className="h-4.5 w-4.5" />任务
           </button>
-          <button className="flex items-center justify-center gap-2 py-2 text-[#6B7280]">
-            <TaskIcon name="gift" className="h-5 w-5" />奖励
+          <button className="flex items-center justify-center gap-1.5 py-1.5 text-[#6B7280]">
+            <TaskIcon name="gift" className="h-4.5 w-4.5" />奖励
           </button>
-          <button className="flex items-center justify-center gap-2 py-2 text-[#6B7280]">
-            <TaskIcon name="clock" className="h-5 w-5" />记录
+          <button className="flex items-center justify-center gap-1.5 py-1.5 text-[#6B7280]">
+            <TaskIcon name="clock" className="h-4.5 w-4.5" />记录
           </button>
         </div>
       </nav>
